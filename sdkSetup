@@ -1,0 +1,23 @@
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-analytics.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCteQjsfggkJtnVS5RtSMuCMp05Drqdwz8",
+    authDomain: "planner-assistan-1584308470570.firebaseapp.com",
+    databaseURL: "https://planner-assistan-1584308470570.firebaseio.com",
+    projectId: "planner-assistan-1584308470570",
+    storageBucket: "planner-assistan-1584308470570.appspot.com",
+    messagingSenderId: "268596014119",
+    appId: "1:268596014119:web:dc4dcbd4587b358098b202",
+    measurementId: "G-WBJD7R04QP"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>

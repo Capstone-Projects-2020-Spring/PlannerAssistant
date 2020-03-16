@@ -1,0 +1,68 @@
+#nav{
+    background-color: #fde753;
+    overflow: hidden;
+    position: fixed; /* Set the navbar to fixed position */
+    top: 0; /* Position the navbar at the top of the page */
+    left: 0;
+    right: 0;
+    width: 100%; /* Full width */
+    height: 100px;
+    z-index: 9999;
+    text-align: justify;
+    border-bottom: 5px solid #efd739;
+}
+
+#nav .links
+{
+    text-align: center;
+    height: 100%;
+    vertical-align: middle;
+}
+
+#title
+{
+    width: 80%;
+    text-align: center;
+    font-size: 40px;
+    color: #FFFFFF;
+    text-decoration: none;
+    text-shadow: 2px 2px #efd739;
+    font-family: "Lucida Console", Times;
+}
+
+#user
+{
+    color: #FFFFFF;
+    -webkit-filter: drop-shadow(2px 2px 2px #efd739 );
+  filter: drop-shadow(2px 2px 2px #efd739);
+}
+
+#home_inject, #profile_inject
+{
+  padding-top: 120px;
+  margin-left: 9%;
+  margin-right: 10%;
+  padding-left: 15px;
+  padding-right: 15px;
+  width: 80%;
+  height: 100%;
+}
+
+#mic_container
+{
+  width: 80%;
+  z-index: 50;
+  overflow: hidden;
+  position: fixed; /* Set the navbar to fixed position */
+  bottom: 0; /* Position the navbar at the top of the page */
+  left: 10%;
+  right: 0;
+  text-align: center;
+}
+
+#mic
+{
+  width: 65px;
+  height: auto;
+  margin-bottom: 30px;
+}

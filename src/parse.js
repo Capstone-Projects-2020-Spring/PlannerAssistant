@@ -23,7 +23,6 @@ function checkMealType(sentence, mealKey, itemNum){
 //    mealKey - an array full of list type items (breakfast, lunch, dinner, etc)
 //    note mealKey is already defined, but sentence can be created and passed in (must fit criteria above)
 function obtainMealType(sentence, mealKey){
-  //Code to find what meal a user is planning for (breakfast, lunch, dinner, etc)
   let truthTable = new Array(mealKey.length);
   //console.log(mealKey.length);
   for(let i = 0; i < mealKey.length; i++){
@@ -44,6 +43,48 @@ function obtainMealType(sentence, mealKey){
   return mealType;
 }
 
+
+//This function tests the correctness of the function that isolates an event specified by the user
+//This function takes in 3 parameters: sentence - the input string that containd the keyword, miscEventKey - the defined
+//  array of possible keyword choices, itemNum - the position of the keyword in the keyword array
+function checkEventType(sentence, miscEventKey, itemNum){
+
+let desired = miscEventKey[itemNum - 1];
+let actual = obtainEventType(sentence, miscEventKey);
+if(desired == actual){
+  console.log("Desired functionality as desired = " + desired + ", actual = " + actual);
+}
+else if(desired != actual){
+  console.log("Undesired functionality as desired = " + desired + ", actual = " + actual);
+}
+else{
+  console.log("Broken");
+}
+}
+
+//This function parses a user string, finds the event the user is referring to, isolates it, and returns it
+//Parameters: sentence - user string , miscEventKey - defined array of possible key word choices
+function obtainEventType(sentence, miscEventKey){
+
+let truthTable = new Array(miscEventKey.length);
+let eventType;
+
+for(let i = 0; i < miscEventKey.length; i++){
+    let regExpr = new RegExp(miscEventKey[i]);
+    truthTable[i] = regExpr.test(sentence);
+    if(truthTable[i] == true){
+        eventType = miscEventKey[i];
+        break;
+    }
+}
+
+
+return eventType;
+}
+
+
+//
+//
 function findIndex(arr){
   for(let i = 0; i < wurds.length; i++){
     if(wurds[i] == "at"){
@@ -63,59 +104,50 @@ function Event(Dinner){
 }
 
 const mealKey = ["Breakfast", "Lunch", "Brunch", "Dinner", "Supper", "Dessert"];
+const miscEventKey = ["Bar", "Bowl", "Restaurant", "Movie", "Coffee", "Skating", "Pizza", "Diner"];
 let locationKey = ["at", "near", "around", "close"];
 let timeKey = ["pm","am"];
 
 let dinnerPlan = "Dinner at Olive Garden";
 let lunchPlan = "Lunch near South Street";
 
-checkMealType(dinnerPlan, mealKey, 4);
+let barMove = "Bar near somewhere around South Street";
+let bowlingMove = "Hey is there anywhere to Bowl in Center City"
 
-
-//test is case sensitive, but will return a bool indicating if the string is present.
-//Try to check using array
-/*
-const reglExp = new RegExp("Lunch");
-console.log(reglExp.test(lunchPlan));
-*/
-
-//Code to find what meal a user is planning for (breakfast, lunch, dinner, etc)
-/*
-let truthTable = new Array(mealKey.length);
-//console.log(mealKey.length);
-for(let i = 0; i < mealKey.length; i++){
-    let regExpress = new RegExp(mealKey[i]);
-    truthTable[i] = regExpress.test(lunchPlan);
-}
-console.log(truthTable);
-//console.log(truthTable[0]);
-
-//console.log("meal event is " + mealKey[1]);
-let mealType;
-for(let k = 0; k < truthTable.length; k++){
-    if(truthTable[k] == true){
-      mealType = mealKey[k];
-    }
-}
-console.log("meal type is " + mealType);
-*/
-
-
-
+//checkMealType(dinnerPlan, mealKey, 4);
+checkEventType(bowlingMove, miscEventKey, 2);
 
 
 const regE = new RegExp('at');
-console.log(dinnerPlan.match(regE));                        //use to match target words that often surround keywords
-console.log(dinnerPlan[dinnerPlan.search(regE) + 3]);         //grabs the word after at
+//console.log(dinnerPlan.match(regE));                        //use to match target words that often surround keywords
+//console.log(dinnerPlan[dinnerPlan.search(regE) + 3]);         //grabs the word after at
 
-let wurds = dinnerPlan.split(' ');                        //converts our string into an array of words
-let index = findIndex(wurds);
-
-console.log(wurds);
+//let wurds = dinnerPlan.split(' ');                        //converts our string into an array of words
+//let index = findIndex(wurds);
 
 
-console.log("index is " , index);
+/*
+let truthTable = new Array(miscEventKey.length);
 
-let locatn = wurds[index + 1];
+for(let i = 0; i < miscEventKey.length; i++){
+      let regExpr = new RegExp(miscEventKey[i]);
+      truthTable[i] = regExpr.test(barMove);
+      if(truthTable[i] == true){
+         break;
+      }
+}
 
-console.log(locatn);
+console.log(truthTable);
+*/
+
+
+
+
+//console.log(wurds);
+
+
+//console.log("index is " , index);
+
+//let locatn = wurds[index + 1];
+
+//console.log(locatn);

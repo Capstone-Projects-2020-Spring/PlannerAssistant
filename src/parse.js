@@ -83,8 +83,11 @@ return eventType;
 }
 
 
+//This function tests the obtain event time method
+//The desired time is the time stated in the passed in sentence and it must be set manually
+//the time key parameter is the set array that contains a list of words that will help identify the time
 function testObtainEventTime(sentence, timeKey, itemNum){
-    let desired = "noon";
+    let desired = "9";
     let actual = obtainEventTime(sentence, timeKey);
     if(desired == actual){
         console.log("Desired functionality as desired = " + desired + ", actual = " + actual);
@@ -98,6 +101,10 @@ function testObtainEventTime(sentence, timeKey, itemNum){
 
 }
 
+//This function identifies the time set by the user
+//Parameters: sentence - sentence containing the specified time , timeKey - array of keywords that will help find the time
+// note timeKey has already been defined
+//This function outputs a string that representes the time specified by the user
 function obtainEventTime(sentence, timeKey){
 let eventTime;
 //go through each item in time key array, use them with search to find an item that doesn't return -1
@@ -149,6 +156,62 @@ return eventTime;
 }
 
 
+//funcion: isolates the location of interest specified by the user
+//Input: sentence - user text, locationkey - a set array of words that can help detect the desired location
+//Output: a string containing the location specified by the user
+function findLocation(sentence, locationKey){
+  //filter thru the location keyword and see which one is there
+  let keyword;
+  let loc;
+
+  let isPresent = new Array(locationKey.length);
+
+  for(let i = 0; i < locationKey.length; i++){
+      let regExxp = new RegExp(locationKey[i]);
+      isPresent[i] = findLocation4.search(regExxp);
+  }
+  console.log(isPresent);
+  console.log(locationKey);
+
+  //break the sentence into an Array
+  let textArray = findLocation4.split(' ');
+  console.log(textArray);
+
+  //find where that location keyword is in the array
+  //only will deal with the first keyword found
+  for(let i = 0; i < isPresent.length; i++){
+      for(let k = 0; k < textArray.length; k++){
+        if((isPresent[i] != -1) && (locationKey[i] == textArray[k])){
+            keyword = locationKey[i];
+        }
+        //break;
+    }
+  }
+
+  console.log(keyword);
+
+  //grab the two next words
+  //will set the location to the next two words after the first keyword match
+  for(i = 0; i < textArray.length; i++){
+    if(keyword == textArray[i]){
+        loc = textArray[i+1] + " " + textArray[i+2];
+        break;
+    }
+    /*
+    if((keyword == textArray[i]) && (i + 2 == textArray.length)){
+        loc = textArray[i + 1] + textArray[i + 2]
+    }
+    if((keyword == textArray[i]) && (i + 2 > textArray.length)){
+        loc = textArray[i + 1];
+    }
+    */
+  }
+
+  console.log(loc);
+
+}
+
+
 //
 //
 function findIndex(arr){
@@ -170,29 +233,35 @@ function Event(Dinner){
 }
 
 const mealKey = ["Breakfast", "Lunch", "Brunch", "Dinner", "Supper", "Dessert"];
-const miscEventKey = ["Bar", "Bowl", "Restaurant", "Movie", "Coffee", "Skate", "Pizza", "Diner"];
-let locationKey = ["at", "near", "around", "close"];
-let timeKey = ["pm","am"];
+const miscEventKey = ["Bar", "Bowl", "Restaurant", "Movie", "Coffee", "Skate", "Pizza", "Diner", "Pool", "Club", "Shop"];
+const eventKeyActions = ["Bowling","Swimming","Shopping"];
+const locationKey = ["at", "near", "around", "close", "in"];
+const timeKey = ["pm","am","noon"];
 
 let dinnerPlan = "Dinner at Olive Garden";
 let lunchPlan = "Lunch near South Street";
 
 let barMove = "Bar near somewhere around South Street";
 let bowlingMove = "Hey is there anywhere to Bowl in Center City"
-let skatingMove = "Hey uh I'm looking for somewhere to take my kids to Skate tonight. Anywhere to do that near"
+let skatingMove = "Hey uh I'm looking for somewhere to take my kids to Skate tonight. Anywhere skating rinks in Delco";
 
-let amMove = "I'd like to find a breakfast spot in Center City around 10 am"
-let pmMove = "I'd like to go to the Movies around 9 pm"
-let noonMove = "Hey I gotta go pick up my kid at noon is there an ice cream spot around Bryn Mawr"
+let amMove = "I'd like to find a breakfast spot in Center City around 10 am";
+let pmMove = "I'd like to go to the Movies around 9 pm";
+let noonMove = "Hey I gotta go pick up my kid from a soccer game at noon is there an ice cream spot around Bryn Mawr";
+
+let findLocation = "I would like to go shopping around South Street tonight around 10 pm";
+let findLocation2 = "I'd like to find a bakery close to old town";
+let findLocation3 = "What is the best Ramen place in China Town";
+let findLocation4 = "I'd like to go to the Movie theater near King of Prussia";
 
 //testMealType(dinnerPlan, mealKey, 4);
 //testEventType(bowlingMove, miscEventKey, 2);
-testObtainEventTime(noonMove, timeKey, 3)
+//testObtainEventTime(pmMove, timeKey, 1)
+//testFindLocation(findLocation, locationKey)
 
 
-const regE = new RegExp('at');
-//console.log(dinnerPlan.match(regE));                        //use to match target words that often surround keywords
-//console.log(dinnerPlan[dinnerPlan.search(regE) + 3]);         //grabs the word after at
+
+
 
 
 

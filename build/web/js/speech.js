@@ -25,7 +25,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     console.log(res[0].transcript);
                     var response = res[0].transcript;
                     buildQuery(response);
-                    sendQuery(response);      //TODO: MAKE API CALL FOR RESPONSE, from another file?
+                    //sendQuery(response);      //TODO: uncomment when legitimate URL
                 }
             }
         };

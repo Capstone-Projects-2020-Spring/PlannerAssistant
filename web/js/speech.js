@@ -23,7 +23,9 @@ window.addEventListener("DOMContentLoaded", () => {
             {
                 if (res.isFinal) {
                     console.log(res[0].transcript);
-                    //buildQuery(res[0].transcript);
+                    var response = res[0].transcript;
+                    buildQuery(response);
+                    sendQuery(response);      //TODO: MAKE API CALL FOR RESPONSE, from another file?
                 }
             }
         };

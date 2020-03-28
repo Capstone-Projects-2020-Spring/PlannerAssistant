@@ -3,12 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/john/Desktop/PlannerAssistant-API_Prep/web/index.html</file>
-            <file>file:/Users/john/Desktop/PlannerAssistant-API_Prep/web/js/home.js</file>
-            <file>file:/Users/john/Desktop/PlannerAssistant-API_Prep/web/js/calendar.js</file>
-            <file>file:/Users/john/Desktop/PlannerAssistant-API_Prep/web/js/profile.js</file>
-            <file>file:/Users/john/Desktop/PlannerAssistant-API_Prep/web/style/index.css</file>
-            <file>file:/Users/john/Desktop/PlannerAssistant-API_Prep/web/user.html</file>
+            <file>file:/Users/john/Desktop/PlannerAssistant/web/js/user.js</file>
+            <file>file:/Users/john/Desktop/PlannerAssistant/web/js/home_inject.js</file>
+            <file>file:/Users/john/Desktop/PlannerAssistant/web/js/home.js</file>
+            <file>file:/Users/john/Desktop/PlannerAssistant/web/index.html</file>
+            <file>file:/Users/john/Desktop/PlannerAssistant/web/user.html</file>
         </group>
     </open-files>
 </project-private>

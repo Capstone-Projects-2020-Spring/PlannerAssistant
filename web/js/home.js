@@ -1,6 +1,7 @@
 window.onload = function () {
 
     var container = document.getElementById("container");
+    container.innerHTML = "";
 
     //create container DOM element for home page contents
     var home_inject = document.createElement('div');

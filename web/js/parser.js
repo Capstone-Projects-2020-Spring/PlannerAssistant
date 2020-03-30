@@ -17,9 +17,9 @@ var queRes = [ //question responses
     "Searching for ", //concat() with item that user wants searched
     "Here are a list of 5 items based on your search", //concat() with item that web scrapper retreived
     "What time would you like this to be scheduled?", 
-    "I see that you have scheduled an item at night, would you like to schedule a meal before that?", 
+    "I see that you have scheduled an item at night, would you like to schedule a meal before that?"
 ];
-function idtoSearch() {
+function parseItem() {
       var keyWords = ["bar", "movie", "restaurant"];
       var inStr = document.getElementById("inText").value; //read the text of user's words
       var arr1 = inStr.split(" "); //break user's words into an array to be searched for keyword
@@ -29,9 +29,17 @@ function idtoSearch() {
         	var reply = reply1.concat(keyWords[i]);
       	}
       }
-      if (reply == undefined) { //check if any keyWord is found
+      if (reply === null) { //check if any keyWord is found
       	document.getElementById("myText").value  = "Sorry, I didn't catch that";
       } else { //checks if the item that the user wants searched is correct. 
 	  	document.getElementById("myText").value  = reply;
       }
+}
+
+function generateEvent(responses) { //creates the event that need to be scheduled 
+    var summary = responses[0];
+    var address = responses[1]
+    var startTime = responses[2];
+    var endTime = responses[3];
+    
 }

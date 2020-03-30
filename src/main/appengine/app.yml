@@ -1,6 +1,6 @@
 ## YAML Template.
 runtime: java
-env: flec
+env: flex
 runtime_config:
     jdk: openjdk13
 handlers:

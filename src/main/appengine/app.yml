@@ -1,0 +1,9 @@
+## YAML Template.
+runtime: java
+env: flec
+runtime_config:
+    jdk: openjdk13
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+---

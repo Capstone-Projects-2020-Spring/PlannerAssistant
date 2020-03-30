@@ -44,23 +44,27 @@ and open the template in the editor.
         
         <button class="button" id="authorize_button" style="display: none;">Sign In</button>
         <button class="button" id="signout_button" style="display: none;">Sign Out</button>
+        <button class="button" id="event_button">Create Event</button>
 
         <pre id="content" style="white-space: pre-wrap;"></pre>
 
         <script type="text/javascript">
           // Client ID and API key from the Developer Console
           var CLIENT_ID = '971949140872-7otb43fi51mn3spjskuhj9ugkssn7oc4.apps.googleusercontent.com';
-          var API_KEY = 'AIzaSyA2t70EFLQWVnLDO8PG8Gc30Wf911zi6FM';
+          var API_KEY = 'AIzaSyAqh4zDcbUt0oPQ1I9WxR4S6T-lYO4NBL4';
 
           // Array of API discovery doc URLs for APIs used by the quickstart
           var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
 
           // Authorization scopes required by the API; multiple scopes can be
           // included, separated by spaces.
-          var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
+          var SCOPES = "https://www.googleapis.com/auth/calendar";
 
           var authorizeButton = document.getElementById('authorize_button');
           var signoutButton = document.getElementById('signout_button');
+          var eventButton = document.getElementById('event_button');
+          
+          
 
           /**
            *  On load, called to load the auth2 library and API client library.
@@ -87,6 +91,7 @@ and open the template in the editor.
               updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
               authorizeButton.onclick = handleAuthClick;
               signoutButton.onclick = handleSignoutClick;
+              eventButton.onclick = handleEventClick;
             }, function(error) {
               appendPre(JSON.stringify(error, null, 2));
             });
@@ -119,6 +124,10 @@ and open the template in the editor.
            */
           function handleSignoutClick(event) {
             gapi.auth2.getAuthInstance().signOut();
+          }
+          
+          function handleEventClick(event) {
+              createEvent();
           }
 
           /**
@@ -164,6 +173,30 @@ and open the template in the editor.
               }
             });
           }
+          
+          function createEvent() {
+              var event = {
+                'summary': 'Test Event',
+              'start': {
+              'date': '2020-04-01',
+              'timeZone': 'America/Los_Angeles'
+              },
+             'end': {
+              'date': '2020-04-02',
+              'timeZone': 'America/Los_Angeles'
+            }
+          };
+          
+          var request = gapi.client.calendar.events.insert({
+            'calendarId': 'primary',
+            'resource': event
+          });
+
+          request.execute(function(event) {
+            appendPre('Event created: ' + event.htmlLink);
+          });
+          }
+          
 
         </script>
 

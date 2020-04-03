@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>com.example</groupId>
-	<artifactId>planner_server</artifactId>
+	<artifactId>plannerAssistant-springServer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	
@@ -36,6 +36,12 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-devtools</artifactId>
 		<scope>runtime</scope>
+	</dependency>
+        
+        <dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-glassFish</artifactId>
+		<scope>provided</scope>
 	</dependency>
 
 	<dependency>

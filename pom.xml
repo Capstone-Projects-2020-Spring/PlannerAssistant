@@ -71,6 +71,11 @@
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>appengine-maven-plugin</artifactId>
                                 <version>2.2.0</version>
+                                <configuration>
+                                    <stage.enableJarSplitting>true</stage.enableJarSplitting>
+                                    <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
+                                    <cloudSdkPath>"C:\Users\rdsmn\AppData\Local\Google\Cloud SDK"</cloudSdkPath>
+                                </configuration>
 			</plugin>
 		</plugins>
 	</build>

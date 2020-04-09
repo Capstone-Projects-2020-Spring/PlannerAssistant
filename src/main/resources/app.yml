@@ -1,6 +1,6 @@
 ## YAML Template.
 application:
-    spring-gc
+    planner-assistant-2020
 runtime: java
 api_version: 1
 threadsafe: true

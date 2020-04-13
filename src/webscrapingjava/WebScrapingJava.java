@@ -11,14 +11,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Scanner;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import jdk.nashorn.internal.objects.NativeArray;
 import okhttp3.*;
 import okhttp3.Request.Builder;
 import org.json.*;
@@ -29,12 +29,14 @@ import org.json.*;
 public class WebScrapingJava {
 
     public static void main(String[] args) throws IOException, JSONException {
+        
         String search_url = "https://api.yelp.com/v3/businesses/search?term=";
+ 
 
         String accessToken=null;
         /* This api key was generated on my machine, it may need to be regenerated if the run fails */
         accessToken = "ZgVZtFbDzup5KFml-GRGxnuKLtQBTDH5Qb4hHsul4MnrkeNXka_5fk_fvT9-emGewhV_4LjbDplML17HXUS0He2a8vy_UXFCdkoFbm9Li4D8sc5dhzLTsqiNIsqAXnYx"; //jsonObjectToken.getString("access_token");
-        ArrayList<Restaurant> rests = new ArrayList<Restaurant>();       
+        ArrayList<Business> businesses = new ArrayList<Business>();       
        
             // GET /businesses/search
             OkHttpClient client = new OkHttpClient();
@@ -42,16 +44,30 @@ public class WebScrapingJava {
             /*  To Do: Need to ask user for location, i.e. 
             *** term and price are now optional ***/
             
-            //String term = "taco";                       // term
-            String location = "Irivine, CA";            // location
-            //String price = "1";                         // price        1 = $, 2 = $$, 3 = $$$, 4 = $$$$
-            int limit = 5;                              // # of restaurants to return per request
+        System.out.print("Enter a category : ");
+        Scanner scannerCat = new Scanner(System.in);
+        String keyword = scannerCat.nextLine();
+        
+        System.out.print("Enter a location : ");
+        Scanner scannerLoc = new Scanner(System.in);
+        String location = scannerLoc.nextLine();
+        
+        
+        /* Search against keywords */
+       String category = getKeywords(keyword);
+       if(category != "")
+           System.out.println("Keyword read: " +keyword+ "\n" + "Using category: " + category + "\n" + "Location read: "+location);
+       else
+           System.out.println("Category does not exist. Using default category..."+ "\n" + "Location read: "+location);        
 
+            //String price = "2";                         // price        1 = $, 2 = $$, 3 = $$$, 4 = $$$$ 
+            int limit = 5;                              // # of restaurants to return per request
             
             /* Make a request to Yelp API */
             Request request = new Builder()
-//                  .url(search_url + term + "&location=" + location + "&limit=1&sort_by=rating&price="+price+"")
-                    .url(search_url + "&location=" + location + "&limit="+limit+"&sort_by=rating")
+                // .url(search_url + term + "&location=" + location + "&limit=1&sort_by=rating&price="+price+"")
+                    //.url(search_url + "&location=" + location + "&price=" + price + "&limit="+limit+"&sort_by=rating")
+                    .url(search_url + "&location=" + location + "&categories=" + category + "&limit=" + limit + "&sort_by=rating")
                     .get()
                     .addHeader("authorization", "Bearer"+" "+accessToken)
                     .build();
@@ -63,55 +79,55 @@ public class WebScrapingJava {
                 /* Convert response to JSON object */
                 JSONObject jsonObject = new JSONObject(response.body().string().trim());
                 /* Get a list of 'businesses' returned by API */
-                JSONArray businesses = (JSONArray)jsonObject.get("businesses");
+                JSONArray businessesArray = (JSONArray)jsonObject.get("businesses");
 
-                ArrayList<String> addressList = new ArrayList<>();
+                //ArrayList<String> addressList = new ArrayList<>();
                 Double lat = 0.0;
                 Double lon = 0.0;
                 
                 /* Loop through businesses (entities) returned and fetch json object to pass into Restaurant() constructor */
-                for(int i=0; i<businesses.length(); i++)
+                for(int i=0; i<businessesArray.length(); i++)
                 {
-                    JSONObject business = businesses.getJSONObject(i);
-                    String name = business.getString("name"); 
-                    String url = business.getString("url");   
-                    String imageURL = business.getString("image_url");
-                    float rating = (float)business.getDouble("rating");  
+                    JSONObject jsonBusiness = businessesArray.getJSONObject(i);
+                    String name = jsonBusiness.getString("name"); 
+                    String url = jsonBusiness.getString("url");   
+                    String imageURL = jsonBusiness.getString("image_url");
+                    float rating = (float)jsonBusiness.getDouble("rating");  
                     /* Get categories - can be more than one */
-                    JSONArray categories = business.getJSONArray("categories");
+                    JSONArray categories = jsonBusiness.getJSONArray("categories");
                     ArrayList<String> categoryList = getCategories(categories);
                     /* Get Addresses */
-                    JSONObject addresses = business.getJSONObject("location");
-                    if(addresses !=null){
-                        addressList = getAddress(addresses);
-                    }
-                    String priceTag = business.getString("price");
-                    Double distance = business.getDouble("distance");
+                    JSONObject addresses = jsonBusiness.getJSONObject("location");
+                    JSONArray displayAddresses = addresses.getJSONArray("display_address");
+                    ArrayList<String> addressList = getDisplayAddress(displayAddresses);
+                    
+                    //String priceTag = business.getString("price") == null? "" : business.getString("price");
+                    Double distance = jsonBusiness.getDouble("distance");
 
-                    JSONObject latObj = business.getJSONObject("coordinates");
+                    JSONObject latObj = jsonBusiness.getJSONObject("coordinates");
                     if(latObj !=null){
                         lat = latObj.getDouble("latitude");
                         lon = latObj.getDouble("longitude");
                     }
                     
                     /* Create Restaurant(s) object */
-                    Restaurant rest = new Restaurant(name,rating,url,imageURL,categoryList,addressList,priceTag,distance,lat,lon);
-                    rests.add(rest);
+                    Business business = new Business(name,rating,url,imageURL,categoryList,addressList,distance,lat,lon);
+                    businesses.add(business);
                 }
-                
-                for(int j=0; j<rests.size(); j++)
-                {
+                 //business #
+                int n =1;
+                for(int j=0; j<businesses.size(); j++)                  
+                {   
                     System.out.println("");
-                    System.out.println("Restaurant " + j);
-                    System.out.println("Name: " + rests.get(j).getName());
-                    System.out.println("Url: " + rests.get(j).getUrl());
-                    System.out.println("Image Url: " + rests.get(j).getImageURL());
-                    System.out.println("Rating: " + rests.get(j).getRating());
-                    System.out.println("Categories: " + rests.get(j).getCategories());
-                    System.out.println("Address: " + rests.get(j).getAddress());
-                    System.out.println("Price: " + rests.get(j).getPrice());
-                    System.out.println("Distance: " + rests.get(j).getDistance());
-                    System.out.println("Coordinates: Lattitude: " + rests.get(j).getLat() + ", Longtitude: "+ rests.get(j).getLon());
+                    System.out.println("Business " + n++);
+                    System.out.println("Name: " + businesses.get(j).getName());
+                    System.out.println("Url: " + businesses.get(j).getUrl());
+                    System.out.println("Image Url: " + businesses.get(j).getImageURL());
+                    System.out.println("Rating: " + businesses.get(j).getRating());
+                    System.out.println("Categories: " + businesses.get(j).getCategories());
+                    System.out.println("Address: " + businesses.get(j).getAddress());
+                    System.out.println("Distance: " + businesses.get(j).getDistance());
+                    System.out.println("Coordinates: Lattitude: " + businesses.get(j).getLat() + ", Longtitude: "+ businesses.get(j).getLon());
                 }
             } 
             catch (IOException e) {
@@ -120,7 +136,29 @@ public class WebScrapingJava {
             }
   }
     
+ 
     
+ private static String getKeywords(String kWord)
+ {
+     String strReturn = "";
+     /* may read from a .json file here */
+     List<Category> keywords = new ArrayList<Category>();
+     
+    keywords.add(new Category("restaurants", new ArrayList() { { add("food"); add("eat"); add("dinner"); add("lunch"); add("diner"); add("hungry"); add("breakfast"); }} ));
+    keywords.add(new Category("bars", new ArrayList() { { add("snack"); add("drink"); add("beer"); add("wine"); add("fingerfood"); add("happyhour"); }} ));
+    keywords.add(new Category("movietheaters", new ArrayList() { { add("driveintheater"); add("outdoormovies"); add("cinema"); add("theater"); }} ));
+    
+    
+    for(int i = 0; i < keywords.size(); i++)
+    {
+        if(keywords.get(i).getSubcategories().contains(kWord)) 
+        {
+            return keywords.get(i).getCategory();
+        }
+    }
+             
+    return strReturn;
+ }
  private static ArrayList<String> getCategories(JSONArray jArray)
  {
      ArrayList<String> listData = new ArrayList<>();
@@ -160,6 +198,26 @@ public class WebScrapingJava {
      catch(JSONException ex){ 
          ex.printStackTrace();
      }
+     
+     return listData;
+ }
+ 
+ private static ArrayList<String> getDisplayAddress(JSONArray jArray)
+ {
+     ArrayList<String> listData = new ArrayList<>();
+     String address = "";
+     try{
+        if (jArray != null) {           
+           for (int i=0;i<jArray.length();i++)
+           { 
+               //if(jArray.getString(i) != null && jArray.getString(i).length() !=0)
+                address += jArray.getString(i)+ ", ";
+           }
+           if (address.endsWith(", ")) {address = address.substring(0, address.length()-2);}
+           listData.add(address);
+       } 
+     }
+     catch(JSONException ex){ ex.printStackTrace();}
      
      return listData;
  }

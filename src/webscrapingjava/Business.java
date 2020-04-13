@@ -1,6 +1,4 @@
 package webscrapingjava;
-
-
 import java.util.ArrayList;
 
 /*
@@ -13,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author user
  */
-public class Restaurant  {
+public class Business  {
   
     private String name;
     private float rating;   
@@ -26,11 +24,11 @@ public class Restaurant  {
     private double lat;
     private double lon;
   
-    public Restaurant(){}
+    public Business(){}
 
-    public Restaurant(String name, float rating, 
+    public Business(String name, float rating, 
                       String url, String imageURL, ArrayList<String> categories, ArrayList<String> address,
-                      String price, double distance, double lat, double lon) {
+                      double distance, double lat, double lon) {
         this.name = name;
         this.rating = rating;
     

@@ -40,17 +40,18 @@ public class WebScrapingJava {
        
             // GET /businesses/search
             OkHttpClient client = new OkHttpClient();
-
-            /*  To Do: Need to ask user for location, i.e. 
-            *** term and price are now optional ***/
+       // this code is for demo purposes 
+       
+       // valid input: city, state, both, zipcode
+        System.out.print("Enter a location : ");
+        Scanner scannerLoc = new Scanner(System.in);
+        String location = scannerLoc.nextLine();
             
         System.out.print("Enter a category : ");
         Scanner scannerCat = new Scanner(System.in);
         String keyword = scannerCat.nextLine();
         
-        System.out.print("Enter a location : ");
-        Scanner scannerLoc = new Scanner(System.in);
-        String location = scannerLoc.nextLine();
+
         
         
         /* Search against keywords */
@@ -58,10 +59,10 @@ public class WebScrapingJava {
        if(category != "")
            System.out.println("Keyword read: " +keyword+ "\n" + "Using category: " + category + "\n" + "Location read: "+location);
        else
-           System.out.println("Category does not exist. Using default category..."+ "\n" + "Location read: "+location);        
+           System.out.println("Category does not exist. Using default category, the most popular places in the location"+ "\n" + "Location read: "+location);        
 
             //String price = "2";                         // price        1 = $, 2 = $$, 3 = $$$, 4 = $$$$ 
-            int limit = 5;                              // # of restaurants to return per request
+            int limit = 10;                              // # of restaurants to return per request
             
             /* Make a request to Yelp API */
             Request request = new Builder()
@@ -147,7 +148,15 @@ public class WebScrapingJava {
     keywords.add(new Category("restaurants", new ArrayList() { { add("food"); add("eat"); add("dinner"); add("lunch"); add("diner"); add("hungry"); add("breakfast"); }} ));
     keywords.add(new Category("bars", new ArrayList() { { add("snack"); add("drink"); add("beer"); add("wine"); add("fingerfood"); add("happyhour"); }} ));
     keywords.add(new Category("movietheaters", new ArrayList() { { add("driveintheater"); add("outdoormovies"); add("cinema"); add("theater"); }} ));
-    
+    // new cats added need more keywords
+    keywords.add(new Category("active", new ArrayList() { { add("active"); add("Tours"); add("bike"); add("skate"); add("Playgrounds");}} ));
+    keywords.add(new Category("adult", new ArrayList() { { add("adult"); add("lingerie"); add("video"); }} ));
+    keywords.add(new Category("hotels", new ArrayList() { { add("hotel"); add("sleep"); add("crush"); }} ));
+    keywords.add(new Category("museums", new ArrayList() { { add("museums"); add("art"); add(""); }} ));
+    keywords.add(new Category("tours", new ArrayList() { { add("tours"); add("excursion"); add("tour"); }} ));
+     keywords.add(new Category("gyms", new ArrayList() { { add("sport"); add("gym"); add("trainer"); add("yoga");}} ));
+     keywords.add(new Category("fashion", new ArrayList() { { add("fashion"); add("designer"); add("cloth"); add("");}} ));
+     keywords.add(new Category("parks", new ArrayList() { { add("jogging"); add("walking"); add("park"); add("nature");}} ));
     
     for(int i = 0; i < keywords.size(); i++)
     {

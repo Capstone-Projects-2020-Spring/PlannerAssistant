@@ -23,11 +23,13 @@ function sendQuery(query)
 
         if (sendRequest.status >= 200 && sendRequest.status < 400)
         {
-            var response = JSON.parse(this.response); //is it going to be in JSON?????????
-            console.log(response);
-
-            outputResponse(response);
+            var backResponse = JSON.parse(this.response); //is it going to be in JSON?????????
+            console.log(backResponse);
+            
+            respondTag == true;
+            outputResponse(backResponse);
         } else {
+            respondTag == false;
             console.log("Request Error: API_call.js, SENDQUERY");
         }
 

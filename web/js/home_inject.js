@@ -38,6 +38,7 @@ function buildResponse(assistantResponse)
     hometable.appendChild(responserow);
 }
 
+
 function buildQuery(userQuery)
 {
     var queryrow = document.createElement('tr');
@@ -57,3 +58,5 @@ function buildQuery(userQuery)
 
     hometable.appendChild(queryrow);
 }
+
+

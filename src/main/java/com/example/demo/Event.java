@@ -12,4 +12,16 @@ package com.example.demo;
  */
 public class Event {
 
+String location;
+String time; 
+String date;
+String category;
+
+public Event(String location, String time, String date, String category){
+    this.location = location;
+    this.time = time;
+    this.date = date;
+    this.category = category;
+}
+
 }

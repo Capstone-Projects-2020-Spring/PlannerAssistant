@@ -59,4 +59,26 @@ function buildQuery(userQuery)
     hometable.appendChild(queryrow);
 }
 
+function convoCheck(phase)
+{
+    switch (phase){
+        case 0:
+            buildResponse("Please tell me the general location of your destination. (e.g. Philadelphia PA, zip code)");
+            break;
+        case 1:
+            buildResponse("What would you like to do?");
+            break;
+        case 2:
+            buildResponse("Please provide a start time for the event. (e.g. April 15 12 pm)");
+            break;
+        case 3:
+            buildResponse("Please specify the duration of the event in hours.");
+            break;
+        case 4:
+            buildResponse("The event has been scheduled, thank you!");
+            convoPhase = 0;
+            break;
+    }
+    
+}
 

@@ -14,7 +14,7 @@ public class API_Call {
 
     String user_query = queryString;
 
-    webscp.getKeywords(queryString);
+    webscp.getKeywords(user_query);
 		
     //Call any functions here to do any analysis, 
     //store those Java files in this project and create the class instances in this files constructor

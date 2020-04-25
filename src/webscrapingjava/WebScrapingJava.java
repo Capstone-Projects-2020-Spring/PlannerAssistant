@@ -5,38 +5,26 @@
  */
 package webscrapingjava;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Scanner;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import okhttp3.*;
 import okhttp3.Request.Builder;
 import org.json.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
-
 /**
  *
  * @author: Alla Ryan
@@ -58,12 +46,22 @@ public class WebScrapingJava {
             Scanner scannerCat = new Scanner(System.in);
             String phrase = scannerCat.nextLine(); //args[0];   
 
-            System.out.print("Date/Time(for example, April 20 4 pm) : ");
-            Scanner scannerTime = new Scanner(System.in);
-            String time = scannerTime.nextLine();
+            System.out.print("What Date? For example, April 20) : ");
+            Scanner scannerDate = new Scanner(System.in);
+            String sDate = scannerDate.nextLine();
+            
+            System.out.print("Please, say start time, For example, 4 pm) : ");
+            Scanner scannerStartTime = new Scanner(System.in);
+            String startTime = scannerStartTime.nextLine();
+            
+            System.out.print("Please, say end time, For example, 7 pm) : ");
+            Scanner scannerEndTime = new Scanner(System.in);
+            String endTime = scannerEndTime.nextLine();
 
-            System.out.println(GetUniversalTime(time));
-
+            System.out.println("Start Date, End Date: " + 
+                    GetUniversalDateTime(GetDateString(sDate),GetTimeString(startTime)) + "," +
+                    GetUniversalDateTime(GetDateString(sDate),GetTimeString(endTime)));
+            
             /* Search against keywords */
             String category = GetKeywordFromPhrase(phrase);
             if (category != "") {
@@ -99,33 +97,85 @@ public class WebScrapingJava {
 
         return strReturn;
     }
-
-    public static String GetUniversalTime(String timeInput) {
+    
+    public static String GetUniversalDateTime(String dateInput, String timeInput)
+    {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
-        Date convertedDate = null;
-
+        Date convertedDate = new Date();
+        
+        String dateStr = dateInput + ":";
+        dateStr += timeInput + ":00:00";    
+         
+        try 
+        {
+            convertedDate = sdf.parse(dateStr);
+        } catch (ParseException e) {
+            return toUTCString(convertedDate, "yyyy-MM-dd'T'HH:mm:ss.SSS zzz");
+        }
+        return toUTCString(convertedDate, "yyyy-MM-dd'T'HH:mm:ss.SSS zzz");
+    }
+            
+    private static String GetMonthNumber(String monthName) 
+    {
+        int month = Month.valueOf(monthName.toUpperCase()).getValue();
+        if (month < 10)
+            return String.valueOf("0" + Month.valueOf(monthName.toUpperCase()).getValue());
+        else
+            return String.valueOf(Month.valueOf(monthName.toUpperCase()).getValue());
+    }
+    
+    private static String GetDateString(String dateInput)
+    {
+        String month = String.valueOf(Calendar.getInstance().get(Calendar.MONTH));
+        String day = String.valueOf(Calendar.getInstance().get(Calendar.DATE));
+        String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+        String dateStr = "";
+        
+        if (dateInput.length() > 0) {
+            String[] strSplit = dateInput.split("\\s+");
+                        
+            day = strSplit[1];
+            month = GetMonthNumber(strSplit[0]);
+            dateStr = year + "-" + month + "-" + day;           
+        }
+        return dateStr;   
+    }
+    
+    private static String GetTimeString(String timeInput) 
+    {  
+        String hour = "12:00";
+        String minutes = "00";
+        String partOfDay = "p.m.";
+        Integer intTimeOfDay = 0;
+        
         if (timeInput.length() > 0) {
             String[] strSplit = timeInput.split("\\s+");
-            String dateStr = strSplit[0] + ":";
-            String digit = strSplit[1];
-            Integer intDigit = Integer.parseInt(digit);
-            String partOfDay = strSplit[2];
-            if ("pm".equals(partOfDay)) {
-                intDigit = (intDigit + 12);
+            hour = strSplit[0];    
+            if(hour != "")
+            {
+                if(hour.contains(":"))
+                {
+                    minutes = hour.split(":")[1];
+                    intTimeOfDay = Integer.parseInt(hour.split(":")[0]);
+                }
+                else
+                    intTimeOfDay = Integer.parseInt(hour);
             }
-            digit = intDigit.toString();
-            dateStr += digit + ":00:00";
-            try {
-                convertedDate = sdf.parse(dateStr);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
+                            
+            partOfDay = strSplit[1];
+            if(partOfDay != "")
+            {
+                partOfDay = partOfDay.replace(".", "");
+                if("pm".equals(partOfDay))
+                intTimeOfDay = (intTimeOfDay + 12);
+            }     
+            
+            hour = intTimeOfDay.toString() + ":" + minutes;
         }
-        return toUTCString(convertedDate, "yyyy-MM-dd'T'HH:mm:ss.SSS zzz", "UTC");
+       return hour;
     }
 
-    public static String toUTCString(final Date date, final String format, final String timezone) {
+    private static String toUTCString(final Date date, final String format) {
         //final TimeZone tz = TimeZone.getTimeZone(timezone);
         final SimpleDateFormat formatter = new SimpleDateFormat(format);
         //formatter.setTimeZone(tz);
@@ -255,6 +305,7 @@ public class WebScrapingJava {
                 add("happyhour");
                 add("yummy");
                 add("delicious");
+                add("bar");
             }
         }));
         keywords.add(new Category("movietheaters", new ArrayList() {
@@ -427,25 +478,25 @@ public class WebScrapingJava {
         return listData;
     }
 
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
-    }
+//    private static String readAll(Reader rd) throws IOException {
+//        StringBuilder sb = new StringBuilder();
+//        int cp;
+//        while ((cp = rd.read()) != -1) {
+//            sb.append((char) cp);
+//        }
+//        return sb.toString();
+//    }
 
-    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
-        InputStream is = new URL(url).openStream();
-        try {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String jsonText = readAll(rd);
-            JSONObject json = new JSONObject(jsonText);
-            return json;
-        } finally {
-            is.close();
-        }
-    }
+//    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
+//        InputStream is = new URL(url).openStream();
+//        try {
+//            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+//            String jsonText = readAll(rd);
+//            JSONObject json = new JSONObject(jsonText);
+//            return json;
+//        } finally {
+//            is.close();
+//        }
+//    }
 
 }

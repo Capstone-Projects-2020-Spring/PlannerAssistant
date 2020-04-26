@@ -22,8 +22,79 @@ observer.observe(document, {
     subtree: true
 });
 
-function buildResponse(assistantResponse)
-{
+function APIresponse(jsonarray) {
+    
+    var responseDiv = document.createElement('div');
+
+    for (var x = 0; x < jsonarray.length; x++) {
+        //jsonarray[x]
+        /*{"name":"Glory Beer Bar \u0026 Kitchen",
+        "rating":4.5,
+        "url":"https://www.yelp.com/biz/glory-beer-bar-and-kitchen-philadelphia-3?adjust_creative\u003dXgcX8QniwDlOzgIfRXFT7w\u0026utm_campaign\u003dyelp_api_v3\u0026utm_medium\u003dapi_v3_business_search\u0026utm_source\u003dXgcX8QniwDlOzgIfRXFT7w",
+        "imageURL":"https://s3-media3.fl.yelpcdn.com/bphoto/Sb5DACyE3moScBknxUmRBg/o.jpg",
+        "categories":["Beer Bar","American (New)","Gastropubs"],
+        "address":["126 Chestnut St, Philadelphia, PA 19106"],"
+        distance":2438.725931717776,"lat":39.94815,"lon":-75.14337}, */
+
+        var resultsTable = document.createElement('table');
+
+        //Location Name
+        var nameRow = document.createElement('tr');
+        var nameTd = document.createElement('td');
+        var name = document.createTextNode(jsonarray[x].name);
+
+        nameTd.appendChild(name);
+        nameRow.appendChild(nameTd);
+        resultsTable.appendChild(nameRow);
+
+        //Location Website
+        var urlRow = document.createElement('tr');
+        var urlTd = document.createElement('td');
+        var url = document.createElement('a');
+        url.setAttribute('href', jsonarray[x].url);
+        var urlText = document.createTextNode(jsonarray[x].name + " Website");
+
+        url.appendChild(urlText);
+        urlTd.appendChild(url);
+        urlRow.appendChild(urlTd);
+        resultsTable.appendChild(urlRow);
+
+        //Location Image
+        var imgRow = document.createElement('tr');
+        var imgTd = document.createElement('td');
+        var img = document.createElement('img');
+        url.setAttribute('src', jsonarray[x].imageURL);
+        
+        imgTd.appendChild(img);
+        imgRow.appendChild(imgTd);
+        resultsTable.appendChild(imgRow);
+
+        //Location Address
+        var addressRow = document.createElement('tr');
+        var addressTd = document.createElement('td');
+        var address = document.createTextNode(jsonarray[x].address);
+
+        addressTd.appendChild(address);
+        addressRow.appendChild(addressTd);
+        resultsTable.appendChild(addressRow);
+
+        //Location Rating
+        var ratingRow = document.createElement('tr');
+        var ratingTd = document.createElement('td');
+        var rating = document.createTextNode(jsonarray[x].rating);
+
+        ratingTd.appendChild(rating);
+        ratingRow.appendChild(ratingTd);
+        resultsTable.appendChild(ratingRow);
+
+        //add to returned div
+        responseDiv.appendChild(resultsTable);
+    }
+
+    hometable.appendChild(responseDiv);
+}
+
+function buildResponse(assistantResponse) {
     var responserow = document.createElement('tr');
     var bufferTD = document.createElement('td');
     var responseHolder = document.createElement('td');
@@ -43,8 +114,7 @@ function buildResponse(assistantResponse)
 }
 
 
-function buildQuery(userQuery)
-{
+function buildQuery(userQuery) {
     var queryrow = document.createElement('tr');
     var bufferTD = document.createElement('td');
     var queryHolder = document.createElement('td');
@@ -64,16 +134,16 @@ function buildQuery(userQuery)
 }
 
 //Cycles through the phases of conversation and performs actions accordingly.
-function convoCheck(response)
-{
-    switch (convoPhase){
+function convoCheck(response) {
+    switch (convoPhase) {
         case 0:
             buildResponse("Please tell me the general location of your destination. (e.g. Philadelphia PA, zip code)");
             destination = response;
             break;
         case 1:
             buildResponse("What would you like to do?");
-            sendQuery(response); //sends Location and Event type
+            categoryString = response;
+            sendQuery(destination, categoryString); //sends Location and Event type
             break;
         case 2:
             buildResponse("Please provide a start time for the event. (e.g. April 15 12 pm)");
@@ -83,7 +153,7 @@ function convoCheck(response)
             break;
         case 4:
             buildResponse(stTime);
-            if(setEndTime(response) == -1){
+            if (setEndTime(response) == -1) {
                 convoPhase -= 1;
                 buildResponse("Sorry, please provide a valid duration.");
                 break;
@@ -97,46 +167,45 @@ function convoCheck(response)
             convoPhase = 0;
             break;
     }
-    
+
 }
 
-function setStartTime(response)
-{
+function setStartTime(response) {
     var parsed = response.split(" ");
     var len = parsed.length;
     var monthT, dayT, hourT, minT;
     var monthInput
     //handles months
-    if(response.includes("")){
-        if (response.includes("p.m.")){
+    if (response.includes("")) {
+        if (response.includes("p.m.")) {
             minT += 12;
         }
-        for (i=1;i<len;i++){
+        for (i = 1; i < len; i++) {
             if (parsed[i].includes("hour"))
-                hourT += parsed[i-1];
+                hourT += parsed[i - 1];
         }
     }
-    
+
     //handles hours
-    if(response.includes("hour")){
-        if (response.includes("p.m.")){
+    if (response.includes("hour")) {
+        if (response.includes("p.m.")) {
             minT += 12;
         }
-        for (i=1;i<len;i++){
+        for (i = 1; i < len; i++) {
             if (parsed[i].includes("hour"))
-                hourT += parsed[i-1];
+                hourT += parsed[i - 1];
         }
     }
-    
+
     //handles minutes
-    if(response.includes("min")){
-        for (i=1;i<len;i++){
+    if (response.includes("min")) {
+        for (i = 1; i < len; i++) {
             if (parsed[i].includes("min"))
-                minT += parsed[i-1];
+                minT += parsed[i - 1];
         }
     }
-    if (Number.isInteger(parseInt(hourT))){
-        if(Number.isInteger(parseInt(minT))){
+    if (Number.isInteger(parseInt(hourT))) {
+        if (Number.isInteger(parseInt(minT))) {
             stTime.setHours(parseInt(hourT), parseInt(minT));
         } else {
             stTime.setHours(parseInt(hourT));
@@ -146,27 +215,26 @@ function setStartTime(response)
     }
 };
 
-function setEndTime(response)
-{
+function setEndTime(response) {
     var parsed = response.split(" ");
     var len = parsed.length;
     var hourT;
     var minT;
-    if(response.includes("hour")){
-        for (i=1;i<len;i++){
+    if (response.includes("hour")) {
+        for (i = 1; i < len; i++) {
             if (parsed[i].includes("hour"))
-                hourT = parsed[i-1];
+                hourT = parsed[i - 1];
         }
     }
-    
-    if(response.includes("min")){
-        for (i=1;i<len;i++){
+
+    if (response.includes("min")) {
+        for (i = 1; i < len; i++) {
             if (parsed[i].includes("min"))
-                minT = parsed[i-1];
+                minT = parsed[i - 1];
         }
     }
-    if (Number.isInteger(parseInt(hourT))){
-        if(Number.isInteger(parseInt(minT))){
+    if (Number.isInteger(parseInt(hourT))) {
+        if (Number.isInteger(parseInt(minT))) {
             stTime.setHours(parseInt(hourT), parseInt(minT));
         } else {
             stTime.setHours(parseInt(hourT));

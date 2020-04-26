@@ -1,9 +1,11 @@
-function sendQuery(query)
+function sendQuery(destination, categoryString)
 {
     //******* DUMMY URL THIS CODE WILL NOT WORK
     //awaiting legitimate GCP URL
     //var requestURL = "www.___.com/?query=" + query;
-    var requestURL = "Planner-assistant-2020.appspot.com/?query=" + query;
+    var requestURL = "Planner-assistant-2020.appspot.com/query?"+
+    "location=" + destination
+    +"&categoryString=" + categoryString;
 
     //send API call of the user (query)
     var sendRequest = new XMLHttpRequest();
@@ -26,9 +28,9 @@ function sendQuery(query)
         {
             var backResponse = JSON.parse(this.response); //is it going to be in JSON?????????
             console.log(backResponse);
-            
+            APIresponse(backResponse);
             respondTag == true;
-            outputResponse(backResponse);
+            
         } else {
             respondTag == false;
             console.log("Request Error: API_call.js, SENDQUERY");

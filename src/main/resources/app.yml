@@ -7,8 +7,8 @@ threadsafe: true
 
 env: flex
 runtime_config:
-    jdk: openjdk8
+    jdk: openjdk14
 handlers:
 - url: /.*
   script: PlannerServerApplication.app
----
+

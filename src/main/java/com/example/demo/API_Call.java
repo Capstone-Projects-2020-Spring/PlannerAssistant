@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import static com.example.demo.WebScrapingMain.GetBusinessesFromYelpAPI;
+import static com.example.demo.WebScrapingMain.GetBusinessesJson;
+import java.util.ArrayList;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,12 +14,15 @@ public class API_Call {
     public String Query(@RequestParam(value = "queryString", required = true) String queryString) {
 
 		String user_query = queryString;
-		
+                String location = "Phila PA";
+                String category = "movies";
+                ArrayList<Business> businesses = GetBusinessesFromYelpAPI(location, category);
+                String returnBusinesses = GetBusinessesJson(businesses);
 		//Call any functions here to do any analysis, 
 		//store those Java files in this project and create the class instances in this files constructor
 		
-        //This string should be the JSON Object response thats converted into a string via GSON thats to be output to the user
-		return ""; 
+                //This string should be the JSON Object response thats converted into a string via GSON thats to be output to the user
+		return returnBusinesses; 
     }
 	
 }

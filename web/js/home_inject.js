@@ -1,3 +1,5 @@
+/* global startTime, stTime */
+
 var hometable = document.createElement('table');
 hometable.id = "home_table";
 
@@ -59,11 +61,14 @@ function buildQuery(userQuery)
     hometable.appendChild(queryrow);
 }
 
-function convoCheck(phase)
+//Cycles through the phases of conversation and performs actions accordingly.
+function convoCheck(response)
 {
-    switch (phase){
+    switch (convoPhase){
         case 0:
             buildResponse("Please tell me the general location of your destination. (e.g. Philadelphia PA, zip code)");
+            destination = response;
+            sendQuery(response);
             break;
         case 1:
             buildResponse("What would you like to do?");
@@ -72,13 +77,53 @@ function convoCheck(phase)
             buildResponse("Please provide a start time for the event. (e.g. April 15 12 pm)");
             break;
         case 3:
-            buildResponse("Please specify the duration of the event in hours.");
+            buildResponse("Please specify the duration of the event in hours and minutes (e.g. 2 hour 30 min)");
             break;
         case 4:
+            buildResponse(stTime);
+            if(setEndTime(response) == -1){
+                convoPhase -= 1;
+                buildResponse("Sorry, please provide a valid duration.");
+                break;
+            }
             buildResponse("The event has been scheduled, thank you!");
+            buildResponse("Would you like to schedule another event?");
+            convoPhase = 0;
+            break;
+        case 5:
+            buildResponse("Thank you for using Planner Assistant");
             convoPhase = 0;
             break;
     }
     
 }
 
+function setEndTime(response)
+{
+    var parsed = response.split(" ");
+    var len = parsed.length;
+    var hourT;
+    var minT;
+    if(response.includes("hour")){
+        for (i=1;i<len;i++){
+            if (parsed[i].includes("hour"))
+                hourT = parsed[i-1];
+        }
+    }
+    
+    if(response.includes("min")){
+        for (i=1;i<len;i++){
+            if (parsed[i].includes("min"))
+                minT = parsed[i-1];
+        }
+    }
+    if (Number.isInteger(parseInt(hourT))){
+        if(Number.isInteger(parseInt(minT))){
+            stTime.setHours(parseInt(hourT), parseInt(minT));
+        } else {
+            stTime.setHours(parseInt(hourT));
+        }
+    } else {
+        return -1;
+    }
+};

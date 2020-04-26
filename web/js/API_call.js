@@ -2,7 +2,8 @@ function sendQuery(query)
 {
     //******* DUMMY URL THIS CODE WILL NOT WORK
     //awaiting legitimate GCP URL
-    var requestURL = "www.___.com/?query=" + query;
+    //var requestURL = "www.___.com/?query=" + query;
+    var requestURL = "Planner-assistant-2020.appspot.com/?query=" + query;
 
     //send API call of the user (query)
     var sendRequest = new XMLHttpRequest();

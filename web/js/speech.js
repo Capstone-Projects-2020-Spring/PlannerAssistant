@@ -15,10 +15,6 @@ window.addEventListener("DOMContentLoaded", () => {
         let listening = false;
         const recognition = new SpeechRecognition();
         
-        var destination = "";
-        var eventType = "";
-        const time = new Date('2020-04-24T00:00:00');
-        var duration = 0;
         
         
         
@@ -38,24 +34,23 @@ window.addEventListener("DOMContentLoaded", () => {
                 console.log(res[0].transcript);
                 var response = res[0].transcript;
                 
-                //repeats recognition if the response is empty
-                /*
-                if (response == null){
-                    buildResponse("Sorry, I didn't catch that. Can you say it again?");
-                    start();
-                }
-                */
                 recognition.onend = function(){
-                    start();
-                }
+                    if (response.includes("thank you")){
+                        stop();
+                        convoPhase = 5;
+                        convoCheck(response);
+                    } else{
+                        start();
+                    }
+                };
+                
                 buildQuery(response);
-                buildResponse("One moment, let me take a look");
-                recognition.abort();
+                buildResponse("Processing...");
                 //sendQuery(response);
-                respondTag += 1; //dummy function, forcefully moves the conversation along
+                respondTag = true; //dummy function, assume response is valid
                 if(respondTag){
-                    convoPhase += 1;
-                    convoCheck(convoPhase);
+                    convoCheck(response);
+                    convoPhase += 1; //forcefully moves conversation along
                 } else {
                     buildResponse("Sorry, I couldn't find anything for that. Lets try again");
                 }
@@ -75,12 +70,11 @@ window.addEventListener("DOMContentLoaded", () => {
             }
         };
         
-        recognition.continuous = true;
+        recognition.continuous = false;
         recognition.interimResults = false;
         recognition.addEventListener("result", onResult);
         
         buildResponse("Hello");
-        //buildResponse("Please tell me where your destination will be? (e.g. Philadelphia, PA)");
         
         window.addEventListener("click", () => {
             
@@ -89,7 +83,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 console.log('click');
                 listening ? stop() : start();
                 //listening = !listening;
-                convoCheck(convoPhase);
             } else {
                 console.log("not mic");
             }

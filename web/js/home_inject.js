@@ -1,4 +1,4 @@
-/* global startTime, stTime */
+/* global stTime, endTime */
 
 var hometable = document.createElement('table');
 hometable.id = "home_table";
@@ -14,7 +14,7 @@ var observer = new MutationObserver(function (mutations, me) {
     }
 });
 
-var months = "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec";
+const months = "JanFebMarAprMayJunJulAugSepOctNovDec";
 
 // start observing
 observer.observe(document, {
@@ -174,16 +174,22 @@ function setStartTime(response) {
     var parsed = response.split(" ");
     var len = parsed.length;
     var monthT, dayT, hourT, minT;
-    var monthInput
     //handles months
-    if (response.includes("")) {
-        if (response.includes("p.m.")) {
-            minT += 12;
-        }
-        for (i = 1; i < len; i++) {
-            if (parsed[i].includes("hour"))
-                hourT += parsed[i - 1];
-        }
+
+    if(months.includes(monthIn)){
+        var monthIn = parsed[0].substring(0,3);
+        var monthT = months.indexOf(monthIn) / 3 + 1 ;
+        stTime.setMonth(monthT);
+    } else {
+        return -1;
+    }
+    //handles date
+    if(Number.isInteger(parseInt(parsed[1]))){
+        dayT = parsed[1];
+        stTime.setDate(dayT);
+    } else {
+        return -1;
+
     }
 
     //handles hours
@@ -233,11 +239,11 @@ function setEndTime(response) {
                 minT = parsed[i - 1];
         }
     }
-    if (Number.isInteger(parseInt(hourT))) {
-        if (Number.isInteger(parseInt(minT))) {
-            stTime.setHours(parseInt(hourT), parseInt(minT));
+    if (Number.isInteger(parseInt(hourT))){
+        if(Number.isInteger(parseInt(minT))){
+            endTime.setHours(parseInt(hourT), parseInt(minT));
         } else {
-            stTime.setHours(parseInt(hourT));
+            endTime.setHours(parseInt(hourT));
         }
     } else {
         return -1;

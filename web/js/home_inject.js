@@ -14,6 +14,8 @@ var observer = new MutationObserver(function (mutations, me) {
     }
 });
 
+var months = "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec";
+
 // start observing
 observer.observe(document, {
     childList: true,
@@ -68,10 +70,10 @@ function convoCheck(response)
         case 0:
             buildResponse("Please tell me the general location of your destination. (e.g. Philadelphia PA, zip code)");
             destination = response;
-            sendQuery(response);
             break;
         case 1:
             buildResponse("What would you like to do?");
+            sendQuery(response); //sends Location and Event type
             break;
         case 2:
             buildResponse("Please provide a start time for the event. (e.g. April 15 12 pm)");
@@ -97,6 +99,52 @@ function convoCheck(response)
     }
     
 }
+
+function setStartTime(response)
+{
+    var parsed = response.split(" ");
+    var len = parsed.length;
+    var monthT, dayT, hourT, minT;
+    var monthInput
+    //handles months
+    if(response.includes("")){
+        if (response.includes("p.m.")){
+            minT += 12;
+        }
+        for (i=1;i<len;i++){
+            if (parsed[i].includes("hour"))
+                hourT += parsed[i-1];
+        }
+    }
+    
+    //handles hours
+    if(response.includes("hour")){
+        if (response.includes("p.m.")){
+            minT += 12;
+        }
+        for (i=1;i<len;i++){
+            if (parsed[i].includes("hour"))
+                hourT += parsed[i-1];
+        }
+    }
+    
+    //handles minutes
+    if(response.includes("min")){
+        for (i=1;i<len;i++){
+            if (parsed[i].includes("min"))
+                minT += parsed[i-1];
+        }
+    }
+    if (Number.isInteger(parseInt(hourT))){
+        if(Number.isInteger(parseInt(minT))){
+            stTime.setHours(parseInt(hourT), parseInt(minT));
+        } else {
+            stTime.setHours(parseInt(hourT));
+        }
+    } else {
+        return -1;
+    }
+};
 
 function setEndTime(response)
 {

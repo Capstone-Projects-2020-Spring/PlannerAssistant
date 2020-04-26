@@ -14,7 +14,7 @@ var observer = new MutationObserver(function (mutations, me) {
     }
 });
 
-const months = "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec";
+const months = "JanFebMarAprMayJunJulAugSepOctNovDec";
 
 // start observing
 observer.observe(document, {

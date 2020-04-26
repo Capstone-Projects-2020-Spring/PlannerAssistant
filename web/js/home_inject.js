@@ -1,5 +1,5 @@
-/* global stTime, endTime */
-
+/* global stTime, endTime, currentTime */
+var eKey = 0;
 var hometable = document.createElement('table');
 hometable.id = "home_table";
 
@@ -143,21 +143,28 @@ function convoCheck(response) {
         case 1:
             buildResponse("What would you like to do?");
             categoryString = response;
-            sendQuery(destination, categoryString); //sends Location and Event type
+            //sendQuery(destination, categoryString); //sends Location and Event type
             break;
         case 2:
             buildResponse("Please provide a start time for the event. (e.g. April 15 12 pm)");
             break;
         case 3:
+            eKey = setStartTime(response);
+            if (eKey > 0) {
+                badInput(eKey);
+                break;
+            }
+            buildResponse(stTime);
             buildResponse("Please specify the duration of the event in hours and minutes (e.g. 2 hour 30 min)");
             break;
         case 4:
-            buildResponse(stTime);
-            if (setEndTime(response) == -1) {
-                convoPhase -= 1;
-                buildResponse("Sorry, please provide a valid duration.");
+            buildResponse(endTime);
+            eKey = setEndTime(response);
+            if (eKey > 0) {
+                badInput(eKey);
                 break;
             }
+            buildResponse(endTime);
             buildResponse("The event has been scheduled, thank you!");
             buildResponse("Would you like to schedule another event?");
             convoPhase = 0;
@@ -171,81 +178,133 @@ function convoCheck(response) {
 }
 
 function setStartTime(response) {
+    console.log(currentTime); //test
     var parsed = response.split(" ");
-    var len = parsed.length;
-    var monthT, dayT, hourT, minT;
+    var yearT = currentTime.getFullYear();
+    var monthT, dayT;
+    var hourT = 0;
+    var minT = 0;
+    
     //handles months
-
+    var monthIn = parsed[0].substring(0,3);
     if(months.includes(monthIn)){
-        var monthIn = parsed[0].substring(0,3);
-        var monthT = months.indexOf(monthIn) / 3 + 1 ;
-        stTime.setMonth(monthT);
+        var monthT = months.indexOf(monthIn) / 3 ;
+        //stTime.setMonth(monthT);
     } else {
-        return -1;
+        return 1;
     }
     //handles date
+    if(parsed[1].includes("th")){
+        parsed[1] = parsed[1].replace("th", "");
+    }
     if(Number.isInteger(parseInt(parsed[1]))){
-        dayT = parsed[1];
-        stTime.setDate(dayT);
+        dayT = parseInt(parsed[1]);
+        //stTime.setDate(dayT);
     } else {
-        return -1;
-
+        return 2;
     }
-
-    //handles hours
-    if (response.includes("hour")) {
-        if (response.includes("p.m.")) {
-            minT += 12;
-        }
-        for (i = 1; i < len; i++) {
-            if (parsed[i].includes("hour"))
-                hourT += parsed[i - 1];
-        }
-    }
-
-    //handles minutes
-    if (response.includes("min")) {
-        for (i = 1; i < len; i++) {
-            if (parsed[i].includes("min"))
-                minT += parsed[i - 1];
-        }
-    }
-    if (Number.isInteger(parseInt(hourT))) {
-        if (Number.isInteger(parseInt(minT))) {
-            stTime.setHours(parseInt(hourT), parseInt(minT));
+    
+    //handles hours and minutes
+    console.log(parsed[2]); //test
+    if (parsed[2].includes(":")){
+        var tempH = parsed[2].split(":");
+        console.log(tempH[0],tempH[1]); //test
+        if(Number.isInteger(parseInt(tempH[0]))){
+            hourT += parseInt(tempH[0]);
+            if(Number.isInteger(parseInt(tempH[1]))){
+                minT += parseInt(tempH[1]);
+            } else {
+                return 4;
+            }
         } else {
-            stTime.setHours(parseInt(hourT));
+            return 3;
         }
+        //stTime.setHours(hourT, minT);
     } else {
-        return -1;
+        console.log(tempH[0]); //test
+        if (Number.isInteger(parseInt(parsed[2]))){
+            hourT += parseInt(tempH[0]);
+        } else {
+            return 3;
+        }
+        //stTime.setHours(hourT);
     }
+    console.log(yearT, monthT, dayT, hourT, minT); //test
+    stTime =  new Date(yearT, monthT, dayT, hourT, minT);
+    endTime =  new Date(yearT, monthT, dayT, hourT, minT);
+    console.log(stTime); //test
+    return 0;
 };
 
 function setEndTime(response) {
     var parsed = response.split(" ");
-    var len = parsed.length;
-    var hourT;
-    var minT;
+    var hourT = stTime.getHours();
+    var minT = stTime.getMinutes();
+    console.log(endTime); //test
+    
     if (response.includes("hour")) {
-        for (i = 1; i < len; i++) {
-            if (parsed[i].includes("hour"))
-                hourT = parsed[i - 1];
-        }
-    }
-
-    if (response.includes("min")) {
-        for (i = 1; i < len; i++) {
-            if (parsed[i].includes("min"))
-                minT = parsed[i - 1];
-        }
-    }
-    if (Number.isInteger(parseInt(hourT))){
-        if(Number.isInteger(parseInt(minT))){
-            endTime.setHours(parseInt(hourT), parseInt(minT));
-        } else {
-            endTime.setHours(parseInt(hourT));
-        }
+        hourT += parseInt(parsed[0]);
     } else {
-        return -1;
+        return 1;
     }
+    if (response.includes("min")) {
+        minT += parseInt(parsed[2]);
+    } else {
+        return 2;
+    }
+    
+    if (hourT != stTime.getHours()){
+        if (minT != stTime.getMinutes()){
+            endTime.setHours(hourT, minT);
+        } else {
+            endTime.setHours(hourT);
+        }
+    }
+    console.log(endTime); //test
+    return 0;
 };
+
+function badInput(key) {
+    switch (convoPhase){
+        case 0:
+            buildResponse("Sorry, lets try again");
+            break;
+        case 1:
+            buildResponse("Sorry, location provided is wrong.");
+            break;
+        case 2:
+            buildResponse("Sorry, I can't identify that type of event.");
+            break;
+        case 3:
+            switch (key){
+                case 1:
+                    buildResponse("Sorry, please provide a valid start month");
+                    break;
+                case 2:
+                    buildResponse("Sorry, please provide a valid start day");
+                    break;
+                case 3:
+                    buildResponse("Sorry, please provide a valid start hour");
+                    break;
+                case 4:
+                    buildResponse("Sorry, please provide a valid start minute");
+                    break;
+            }
+            break;
+        case 4:
+            switch (key){
+                case 1:
+                    buildResponse("Sorry, please provide a valid hour");
+                    break;
+                case 2:
+                    buildResponse("Sorry, please provide a valid minute");
+                    break;
+            }
+            break;
+        case 5:
+            buildResponse("Sorry, I can't identify that type of event.");
+            break;
+        
+    }
+    convoPhase -= 1;
+}

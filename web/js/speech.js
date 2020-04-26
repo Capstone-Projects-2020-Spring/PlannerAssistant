@@ -17,7 +17,6 @@ window.addEventListener("DOMContentLoaded", () => {
         
         
         
-        
         const start = () => {
             recognition.start();
             listening = true;

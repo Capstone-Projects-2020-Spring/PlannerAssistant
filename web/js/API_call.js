@@ -3,7 +3,7 @@ function sendQuery(destination, categoryString)
     //******* DUMMY URL THIS CODE WILL NOT WORK
     //awaiting legitimate GCP URL
     //var requestURL = "www.___.com/?query=" + query;
-    var requestURL = "Planner-assistant-2020.appspot.com/query?"+
+    var requestURL = "https://assignment04-274007.uk.r.appspot.com/query?"+
     "location=" + destination
     +"&categoryString=" + categoryString;
 

@@ -1,14 +1,17 @@
-function sendQuery(query)
+function sendQuery(destination, categoryString)
 {
     //******* DUMMY URL THIS CODE WILL NOT WORK
     //awaiting legitimate GCP URL
-    var requestURL = "www.___.com/?query=" + query;
+    //var requestURL = "www.___.com/?query=" + query;
+    var requestURL = "https://assignment04-274007.uk.r.appspot.com/query?"+
+    "location=" + destination
+    +"&categoryString=" + categoryString;
 
     //send API call of the user (query)
     var sendRequest = new XMLHttpRequest();
 
     // Open a new connection, using the GET request on the URL endpoint
-    console.log("Before Open");
+    console.log("Before Open"+requestURL);
     try {
         sendRequest.open('GET', requestURL, true);
         console.log("Opened");
@@ -23,11 +26,15 @@ function sendQuery(query)
 
         if (sendRequest.status >= 200 && sendRequest.status < 400)
         {
-            var response = JSON.parse(this.response); //is it going to be in JSON?????????
-            console.log(response);
-
-            outputResponse(response);
+            var backResponse = JSON.parse(this.response);
+            localStorage.setItem('jsonObj', this.response);
+            console.log(backResponse);
+            APIresponse(backResponse);
+            respondTag == true;
+            convoPhase +=1;
+            
         } else {
+            respondTag == false;
             console.log("Request Error: API_call.js, SENDQUERY");
         }
 

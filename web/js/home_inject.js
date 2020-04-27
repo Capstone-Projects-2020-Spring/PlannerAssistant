@@ -236,6 +236,12 @@ function setStartTime(response) {
         return 2;
     }
     
+    //handles pm
+    if (parsed[3].includes("p.m.")||parsed[3].includes("pm")){
+        hourT += 12;
+        console.log(hourT);//test
+    }
+    
     //handles hours and minutes
     console.log(parsed[2]); //test
     if (parsed[2].includes(":")){

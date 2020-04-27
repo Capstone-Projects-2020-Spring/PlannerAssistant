@@ -38,7 +38,7 @@ window.addEventListener("DOMContentLoaded", () => {
                         convoPhase = 7;
                         convoCheck(response);
                         stop();
-                    } else{
+                    } else {
                         start();
                     }
                 };

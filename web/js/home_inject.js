@@ -177,7 +177,7 @@ function convoCheck(response) {
                 break;
             }
             convoPhase +=1;
-            buildResponse(stTime);
+            buildResponse("Start Time is: \n"+stTime);
             buildResponse("Please specify the duration of the event in hours and minutes (e.g. 2 hour 30 min)");
             break;
         case 5:
@@ -188,7 +188,7 @@ function convoCheck(response) {
                 break;
             }
             convoPhase +=1;
-            buildResponse(endTime);
+            buildResponse("End Time is: \n"+endTime);
             buildResponse("The event has been scheduled, thank you!");
             buildResponse("Would you like to schedule another event?");
             break;

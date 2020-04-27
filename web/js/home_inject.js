@@ -177,7 +177,7 @@ function convoCheck(response) {
                 break;
             }
             convoPhase +=1;
-            buildResponse(stTime);
+            buildResponse("Start Time is: \n"+stTime);
             buildResponse("Please specify the duration of the event in hours and minutes (e.g. 2 hour 30 min)");
             break;
         case 5:
@@ -188,9 +188,11 @@ function convoCheck(response) {
                 break;
             }
             convoPhase +=1;
-            buildResponse(endTime);
+
+            buildResponse("End Time is: \n"+endTime);
             initClient();
             createEvent(pickedItem, stTime.toISOString(), endTime.toISOString());
+
             buildResponse("The event has been scheduled, thank you!");
             buildResponse("Would you like to schedule another event?");
             break;
@@ -236,6 +238,12 @@ function setStartTime(response) {
         //stTime.setDate(dayT);
     } else {
         return 2;
+    }
+    
+    //handles pm
+    if (parsed[3].includes("p.m.")||parsed[3].includes("pm")){
+        hourT += 12;
+        console.log(hourT);//test
     }
     
     //handles hours and minutes

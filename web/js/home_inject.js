@@ -189,6 +189,8 @@ function convoCheck(response) {
             }
             convoPhase +=1;
             buildResponse(endTime);
+            initClient();
+            createEvent(categoryString, stTime.toISOString(), endTime.toISOString());
             buildResponse("The event has been scheduled, thank you!");
             buildResponse("Would you like to schedule another event?");
             break;
@@ -341,4 +343,63 @@ function setItem(key){
     var data = JSON.parse(localStorage.getItem('jsonObj'));
     pickedItem = data[key].name;
 
+}
+
+var CLIENT_ID = '971949140872-7otb43fi51mn3spjskuhj9ugkssn7oc4.apps.googleusercontent.com';
+var API_KEY = 'AIzaSyAqh4zDcbUt0oPQ1I9WxR4S6T-lYO4NBL4';
+// Array of API discovery doc URLs for APIs used by the quickstart
+var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+// Authorization scopes required by the API; multiple scopes can be
+// included, separated by spaces.
+var SCOPES = "https://www.googleapis.com/auth/calendar";
+
+
+/**
+ *  On load, called to load the auth2 library and API client library.
+ */
+function handleClientLoad() {
+  gapi.load('client:auth2', initClient);
+}
+
+function initClient() {
+  gapi.client.init({
+    apiKey: API_KEY,
+    clientId: CLIENT_ID,
+    discoveryDocs: DISCOVERY_DOCS,
+    scope: SCOPES
+  }).then(function () {
+    // Listen for sign-in state changes.
+    gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+
+    // Handle the initial sign-in state.
+    updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+  }, function(error) {
+  });
+}
+
+function updateSigninStatus(isSignedIn) {
+    console.log("signed in");
+}
+
+function createEvent(summary, start, end) {
+    var event = {
+      'summary': summary,
+      'start': {
+          'dateTime': start,
+          'timeZone': 'America/Los_Angeles'
+      },
+      'end': {
+          'dateTime': end,
+          'timeZone': 'America/Los_Angeles'
+      }
+    };
+
+    var request = gapi.client.calendar.events.insert({
+      'calendarId': 'primary',
+      'resource': event
+    });
+
+    request.execute(function(event) {
+      console.log("event created");
+    });
 }

@@ -24,10 +24,26 @@ and open the template in the editor.
         </div>
         
        <!--All external JS files-->
+        <script type='text/javascript'>
+            var respondTag = false;
+            var convoPhase = 0;
+            var destination = "";
+            var categoryString = "";
+            var eventType = 0;
+            var pickedItem;
+            var currentTime = new Date();
+            var stTime;
+            var endTime;
+        </script>
         <script src="./js/home.js"></script>
         <script src="./js/speech.js"></script>
         <script src="./js/API_call.js"></script>
         <script src="./js/home_inject.js"></script>
+        
+        <script async defer src="https://apis.google.com/js/api.js"
+          onload="this.onload=function(){};handleClientLoad()"
+          onreadystatechange="if (this.readyState === 'complete') this.onload()">
+        </script>
         
     </body>
 </html>

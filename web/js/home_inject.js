@@ -190,7 +190,7 @@ function convoCheck(response) {
             convoPhase +=1;
             buildResponse(endTime);
             initClient();
-            createEvent(categoryString, stTime.toISOString(), endTime.toISOString());
+            createEvent(pickedItem, stTime.toISOString(), endTime.toISOString());
             buildResponse("The event has been scheduled, thank you!");
             buildResponse("Would you like to schedule another event?");
             break;

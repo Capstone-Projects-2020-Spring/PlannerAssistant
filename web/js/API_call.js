@@ -11,7 +11,7 @@ function sendQuery(destination, categoryString)
     var sendRequest = new XMLHttpRequest();
 
     // Open a new connection, using the GET request on the URL endpoint
-    console.log("Before Open");
+    console.log("Before Open"+requestURL);
     try {
         sendRequest.open('GET', requestURL, true);
         console.log("Opened");
@@ -26,10 +26,12 @@ function sendQuery(destination, categoryString)
 
         if (sendRequest.status >= 200 && sendRequest.status < 400)
         {
-            var backResponse = JSON.parse(this.response); //is it going to be in JSON?????????
+            var backResponse = JSON.parse(this.response);
+            localStorage.setItem('jsonObj', this.response);
             console.log(backResponse);
             APIresponse(backResponse);
             respondTag == true;
+            convoPhase +=1;
             
         } else {
             respondTag == false;

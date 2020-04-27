@@ -34,38 +34,31 @@ window.addEventListener("DOMContentLoaded", () => {
                 var response = res[0].transcript;
                 
                 recognition.onend = function(){
-                    if (response.includes("thank you")){
-                        stop();
-                        convoPhase = 5;
+                    if (response.includes("thank you") || convoPhase == 7){
+                        convoPhase = 7;
                         convoCheck(response);
+                        stop();
                     } else{
                         start();
                     }
                 };
-                
-                buildQuery(response);
-                buildResponse("Processing...");
-                //sendQuery(response);
-                respondTag = true; //dummy function, assume response is valid
-                if(respondTag){
-                    convoCheck(response);
-                    convoPhase += 1; //forcefully moves conversation along
-                } else {
-                    buildResponse("Sorry, I couldn't find anything for that. Lets try again");
-                }
-                
-                
-                
-                //Previous version of the code
-                /*
-                if (res.isFinal) {
-                    console.log(res[0].transcript);
-                    var response = res[0].transcript;
-                    //buildResponse(response);
+                if (convoPhase < 7){
                     buildQuery(response);
-                    //sendQuery(response);      //TODO: uncomment when legitimate URL
+                    buildResponse("Processing...");
+                    respondTag = true; //dummy function, assume response is valid
+                    if(respondTag){
+                        console.log(convoPhase);//test
+                        convoCheck(response);
+                        //convoPhase += 1; //forcefully moves conversation along
+                    } else {
+                        buildResponse("Sorry, I couldn't find anything for that. Lets try again");
+                    }
+                } else {
+                    console.log(convoPhase);
+                    stop();
                 }
-                */
+                
+                
             }
         };
         
@@ -80,6 +73,7 @@ window.addEventListener("DOMContentLoaded", () => {
             if (event.target.id === "mic")
             {
                 console.log('click');
+                convoPhase = 0;
                 listening ? stop() : start();
                 //listening = !listening;
             } else {

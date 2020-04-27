@@ -25,8 +25,10 @@ observer.observe(document, {
 function APIresponse(jsonarray) {
     
     var responseDiv = document.createElement('div');
-
-    for (var x = 0; x < jsonarray.length; x++) {
+    
+    responseDiv.classList.add('speech-bubble-response');
+    
+    for (var x = 0; x < 5; x++) {
         //jsonarray[x]
         /*{"name":"Glory Beer Bar \u0026 Kitchen",
         "rating":4.5,
@@ -40,7 +42,7 @@ function APIresponse(jsonarray) {
 
         //Location Name
         var nameRow = document.createElement('tr');
-        var nameTd = document.createElement('td');
+        var nameTd = document.createElement('th');
         var name = document.createTextNode(jsonarray[x].name);
 
         nameTd.appendChild(name);
@@ -52,6 +54,7 @@ function APIresponse(jsonarray) {
         var urlTd = document.createElement('td');
         var url = document.createElement('a');
         url.setAttribute('href', jsonarray[x].url);
+        url.setAttribute('target', "_blank");
         var urlText = document.createTextNode(jsonarray[x].name + " Website");
 
         url.appendChild(urlText);
@@ -137,41 +140,70 @@ function buildQuery(userQuery) {
 function convoCheck(response) {
     switch (convoPhase) {
         case 0:
+            buildResponse("Welcome to Planner Assistant!");
             buildResponse("Please tell me the general location of your destination. (e.g. Philadelphia PA, zip code)");
-            destination = response;
+            if (response != null){
+                convoPhase +=1;
+            }
             break;
         case 1:
             buildResponse("What would you like to do?");
-            categoryString = response;
-            //sendQuery(destination, categoryString); //sends Location and Event type
+            destination = response;
+            if (response != null){
+                convoPhase +=1;
+            }
+            console.log(destination);
             break;
         case 2:
-            buildResponse("Please provide a start time for the event. (e.g. April 15 12 pm)");
+            categoryString = response;
+            console.log(categoryString);
+            sendQuery(destination, categoryString); //sends Location and Event type
+            buildResponse("Please pick an item from list below");
             break;
         case 3:
+            if (response != null){
+                convoPhase +=1;
+            }
+            eventType = response;
+            console.log(eventType);
+            setItem(eventType);
+            console.log(pickedItem);
+            buildResponse("Please provide a start time for the event. (e.g. April 15 12 pm)");
+            break;
+        case 4:
             eKey = setStartTime(response);
             if (eKey > 0) {
                 badInput(eKey);
                 break;
             }
+            convoPhase +=1;
             buildResponse(stTime);
             buildResponse("Please specify the duration of the event in hours and minutes (e.g. 2 hour 30 min)");
             break;
-        case 4:
-            buildResponse(endTime);
+        case 5:
+            //buildResponse(endTime);
             eKey = setEndTime(response);
             if (eKey > 0) {
                 badInput(eKey);
                 break;
             }
+            convoPhase +=1;
             buildResponse(endTime);
             buildResponse("The event has been scheduled, thank you!");
             buildResponse("Would you like to schedule another event?");
-            convoPhase = 0;
             break;
-        case 5:
+        case 6:
+            console.log(response);
+            if(response == "yes"){
+                console.log(response);
+                convoPhase = 0;
+            } else {
+                console.log(response);
+                convoPhase = 7;
+            }
+            break;
+        case 7:
             buildResponse("Thank you for using Planner Assistant");
-            convoPhase = 0;
             break;
     }
 
@@ -221,9 +253,9 @@ function setStartTime(response) {
         }
         //stTime.setHours(hourT, minT);
     } else {
-        console.log(tempH[0]); //test
+        console.log(parsed[2]); //test
         if (Number.isInteger(parseInt(parsed[2]))){
-            hourT += parseInt(tempH[0]);
+            hourT += parseInt(parsed[2]);
         } else {
             return 3;
         }
@@ -249,9 +281,7 @@ function setEndTime(response) {
     }
     if (response.includes("min")) {
         minT += parseInt(parsed[2]);
-    } else {
-        return 2;
-    }
+    } 
     
     if (hourT != stTime.getHours()){
         if (minT != stTime.getMinutes()){
@@ -296,9 +326,6 @@ function badInput(key) {
                 case 1:
                     buildResponse("Sorry, please provide a valid hour");
                     break;
-                case 2:
-                    buildResponse("Sorry, please provide a valid minute");
-                    break;
             }
             break;
         case 5:
@@ -306,5 +333,12 @@ function badInput(key) {
             break;
         
     }
-    convoPhase -= 1;
+    //convoPhase -= 1;
+}
+
+function setItem(key){
+    key -= 1;
+    var data = JSON.parse(localStorage.getItem('jsonObj'));
+    pickedItem = data[key].name;
+
 }
